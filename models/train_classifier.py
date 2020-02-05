@@ -1,16 +1,11 @@
+# import nltk and download punkt and wordnet
 import nltk
-nltk.download(['punkt', 'wordnet', 'stopwords']);
+nltk.download(['punkt', 'wordnet']);
 
 import sys
 from nltk.tokenize import word_tokenize
 from nltk.stem import WordNetLemmatizer
-from nltk.corpus import stopwords
-stop_words = set(stopwords.words('english'))
 
-from bs4 import BeautifulSoup
-
-from nltk.tokenize import WordPunctTokenizer
-tok = WordPunctTokenizer()
 
 
 import pandas as pd
@@ -24,18 +19,30 @@ from sklearn.ensemble import RandomForestClassifier
 from sklearn.feature_extraction.text import CountVectorizer, TfidfTransformer
 from sklearn.datasets import make_multilabel_classification
 from sklearn.multioutput import MultiOutputClassifier
-from sklearn.neighbors import KNeighborsClassifier
 from sklearn.svm import SVC
 import pickle
-import re
-url_regex = 'http[s]?://(?:[a-zA-Z]|[0-9]|[$-_@.&+]|[!*\(\),]|(?:%[0-9a-fA-F][0-9a-fA-F]))+'
 
 
+# 
 def load_data(database_filepath):
+    '''
+    load_data() funtion to load Dataframe from SQLite database
+    Input:
+        database_filepath - database name and filepath
+    output:
+        X: message column in dF
+        Y: categories columns in df
+        category_names : categories names
+    '''
+    # create SQLite engine and read the database
     engine = create_engine('sqlite:///'+database_filepath)
+    # read the table Disaster_Msg that was cleaned in process_data.py
     df = pd.read_sql_table("Disaster_Msg", engine)
+    # assign the input column which contains the message to X
     X = df['message']
+    # assign the categories columns to Y
     Y = df[df.columns[4:]]
+    # get the categories names
     category_names = Y.columns.values
     return X, Y, category_names
 
@@ -51,6 +58,13 @@ def tokenize(text):
 
 
 def build_model():
+    '''
+    build_model() build ML model using Pipeline
+    Input:
+        None
+    output:
+        Pipeline model
+    '''
     model = Pipeline([
         ('vect', CountVectorizer(tokenizer=tokenize, max_df= 1.0, ngram_range= (1, 2))),
         ('tfidf', TfidfTransformer(use_idf= True)),
@@ -61,11 +75,34 @@ def build_model():
 
 
 def evaluate_model(model, X_test, Y_test, category_names):
+    '''
+    evaluate_model() to test our ML algorithm effecincy and print the f1_score, precision and recall results
+    Input:
+        model: ML model that was built in build_model()
+        X_test: the sample was taking from X for testing reasons
+        Y_test: the sample was taking from Y for testing reasons
+        category_names: categories names
+    Output:
+        None
+    Discription:
+        This funtion will takes inputs and use the trained model to predict the testing samples to check the accuracy of the model.
+        Then, will print the f1_score, precision and recall results
+    '''
     y_pred = model.predict(X_test)
     print(classification_report(Y_test, y_pred, target_names=category_names))
 
 
 def save_model(model, model_filepath):
+    '''
+    save_model() to save trained model as a pickle file
+    Input:
+        model: ML model that was trained
+        model_filepath: the filepath where the trained model will be saved
+    Output:
+        None
+    Discription:
+        This funtion will takes the trained model and filepath to save the model as a pickle file in the model_filepath
+    '''
     pickle.dump(model, open(model_filepath, 'wb'))
 
 
