@@ -27,9 +27,13 @@ In a Python script, run.py, the following actions will be performed:
 
 Folder Hierarichy:
 - app
+
 | - template
+
 | |- master.html  # main page of web app
+
 | |- go.html  # classification result page of web app
+
 |- run.py  # Flask file that runs app
 
 - data
