@@ -35,10 +35,10 @@ Folder Hierarichy:
      - disaster_categories.csv  # data to process 
      - disaster_messages.csv  # data to process
      - process_data.py
-     - InsertDatabaseName.db   # database to save clean data to
+     - DisasterResponse.db   # database to save clean data to
 - models
      - train_classifier.py
-     - classifier.pkl  # saved model 
+     - classifier.pkl  # saved model (not uploaded bacause of the size is larger than allowed)
 - README.md
 
 
