@@ -45,7 +45,10 @@ def clean_data(df):
 
 
 def save_data(df, database_filename):
+    # save the dataframe in SQLite
+    # create the SQLite engine
     engine = create_engine('sqlite:///'+database_filename)
+    # Write the Dataframe into Disaster_Msg table
     df.to_sql('Disaster_Msg', engine, index=False, if_exists='replace')
     return
 
