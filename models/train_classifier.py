@@ -81,11 +81,11 @@ def improve_model(model):
     output:
         improved model using GridSearchCV
     '''
-    parameters = {'vect__ngram_range': ((1, 2)),
-            'vect__max_df': (1.0),
-            'tfidf__use_idf': (True),
-            'clf__estimator__n_estimators': [25],
-            'clf__estimator__min_samples_split': [6]}
+    parameters = {'vect__ngram_range': ((1, 1), (1, 2)),
+            'vect__max_df': (0.5, 0.75, 1.0),
+            'tfidf__use_idf': (True, False),
+            'clf__estimator__n_estimators': [5, 25],
+            'clf__estimator__min_samples_split': [2, 6, 10]}
 
     model = GridSearchCV(model, param_grid=parameters)
     
