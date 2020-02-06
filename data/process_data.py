@@ -4,6 +4,14 @@ from sqlalchemy import create_engine
 
 
 def load_data(messages_filepath, categories_filepath):
+    '''
+    load_data() will take message and categories files filepath and return a Dataframe 
+    Input:
+        messages_filepath - filepath for the message csv file
+        categories_filepath - filepath for the categories csv file
+    output:
+        df - merged dataframe by 'id' column
+    '''
     # load messages csv file
     messages = pd.read_csv(messages_filepath)
     # load categories csv file
@@ -15,6 +23,21 @@ def load_data(messages_filepath, categories_filepath):
 
 
 def clean_data(df):
+    '''
+    clean_data() will take dataframe and return it after cleaning 
+    Input:
+        df - dataframe that required cleaning
+    output:
+        df - after cleaning
+    Description:
+        This function will take dataframe then start cleaning it and prepare it for training and ML algorithm.
+        The cleaning process will follow the following steps:
+            1- split category columns into a seperate column for each category then delete 'category' column
+            2- drop duplicates
+            3- drop columns that null values represents more than 25% of the data 
+            4- drop columns that contain a single value
+            5- drop abnormal values.
+    '''
     # create a dataframe of the 36 individual category columns
     categories = df['categories'].str.split(';', expand=True)
     # select the first row of the categories dataframe to extract a list of new column names for categories.
@@ -45,6 +68,14 @@ def clean_data(df):
 
 
 def save_data(df, database_filename):
+    '''
+    save_data() will take the cleaned dataframe and save it into a database
+    Input:
+        df - cleaned dataframe
+        database_filename - filename of the database that database that the dataframe will be saved into 
+    output:
+        None
+    '''
     # save the dataframe in SQLite
     # create the SQLite engine
     engine = create_engine('sqlite:///'+database_filename)
