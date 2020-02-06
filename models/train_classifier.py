@@ -66,10 +66,28 @@ def build_model():
         Pipeline model
     '''
     model = Pipeline([
-        ('vect', CountVectorizer(tokenizer=tokenize, max_df= 1.0, ngram_range= (1, 2))),
-        ('tfidf', TfidfTransformer(use_idf= True)),
-        ('clf', MultiOutputClassifier(RandomForestClassifier(min_samples_split= 6, n_estimators= 25)))
+        ('vect', CountVectorizer(tokenizer=tokenize),
+        ('tfidf', TfidfTransformer()),
+        ('clf', MultiOutputClassifier(RandomForestClassifier()))
     ])
+    
+    return model
+        
+def improve_model(model):
+    '''
+    improve_model() improve ML model using GridSearchCV
+    Input:
+        model - pipeline model
+    output:
+        improved model using GridSearchCV
+    '''
+    parameters = {'vect__ngram_range': ((1, 2)),
+            'vect__max_df': (1.0),
+            'tfidf__use_idf': (True),
+            'clf__estimator__n_estimators': [25],
+            'clf__estimator__min_samples_split': [6]}
+
+    model = GridSearchCV(model, param_grid=parameters)
     
     return model
 
@@ -120,6 +138,12 @@ def main():
         model.fit(X_train, Y_train)
         
         print('Evaluating model...')
+        evaluate_model(model, X_test, Y_test, category_names)
+        
+        print('Improving model...')
+        improve_model(model)
+        
+        print('Reevaluating model after improving...')
         evaluate_model(model, X_test, Y_test, category_names)
 
         print('Saving model...\n    MODEL: {}'.format(model_filepath))
