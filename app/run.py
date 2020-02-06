@@ -44,25 +44,36 @@ def index():
     genre_names = list(genre_counts.index)
     
     # create visuals
-    # TODO: Below is an example - modify to create your own visuals
+    # The following will display a bar chart of top 10 message categories and a doughnut of the Distribution of Message Genres
     graphs = [
         {
             'data': [
                 Bar(
-                    x=genre_names,
-                    y=genre_counts
+                    x=cat_names,
+                    y=cat_counts
                 )
+                
             ],
 
             'layout': {
-                'title': 'Distribution of Message Genres',
+                'title': 'Top 10 Message Categories',
                 'yaxis': {
                     'title': "Count"
                 },
                 'xaxis': {
-                    'title': "Genre"
+                    'title': "Categories"
                 }
             }
+        },
+        {
+            'data': [
+                Pie(
+                    labels =genre_names,
+                    values =genre_counts,
+                    hole=.3
+                )
+                
+            ]
         }
     ]
     
